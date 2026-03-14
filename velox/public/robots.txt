@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Disallow internal/utility paths
+Disallow: /configure/
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://velox-automobiles.com/sitemap.xml

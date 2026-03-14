@@ -1,0 +1,3 @@
+# Redirect all routes to index.html so React Router handles them
+# Required for SPA on Netlify, Render static sites, Vercel, etc.
+/*    /index.html   200

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>VELOX</title>
+  <!--
+    GitHub Pages SPA fix.
+    Redirects all 404s back to index.html so React Router can handle them.
+    Script from: https://github.com/rafgraph/spa-github-pages
+  -->
+  <script>
+    var l = window.location;
+    l.replace(
+      l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') + '/' +
+      l.pathname.slice(1).replace(/\//, '?') + l.search + l.hash
+    );
+  </script>
+</head>
+<body></body>
+</html>

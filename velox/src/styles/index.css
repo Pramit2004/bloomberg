@@ -1,0 +1,271 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── CSS Custom Properties ─── */
+:root {
+  --black:  #050505;
+  --ink:    #0c0c0c;
+  --panel:  #111111;
+  --gold:   #c09a5a;
+  --gold-hi:#e0c07a;
+  --gold-lo:#7a6035;
+  --cream:  #f0e9dc;
+  --dim:    rgba(240,233,220,0.46);
+  --faint:  rgba(240,233,220,0.07);
+  --ease:   cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ─── Base ─── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--black);
+  color: var(--cream);
+  font-family: 'Montserrat', Arial, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* cursor:none is injected by Cursor.jsx via JS only on pointer devices */
+  /* This prevents mobile from ever losing its native cursor */
+}
+
+/* Touch / mobile — always native cursor, never hidden */
+@media (hover: none), (pointer: coarse) {
+  body, * { cursor: auto !important; }
+  a, button, [role="button"] { cursor: pointer !important; }
+}
+
+img { display: block; max-width: 100%; }
+a   { text-decoration: none; color: inherit; }
+button { font-family: inherit; }
+ul, ol { list-style: none; }
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar       { width: 2px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--gold-lo); }
+
+/* ─── Selection ─── */
+::selection {
+  background: var(--gold);
+  color: var(--black);
+}
+
+/* ─── Noise grain overlay ─── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9700;
+  pointer-events: none;
+  opacity: 0.025;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ─── Typography helpers ─── */
+.font-display  { font-family: 'Cormorant Garamond', Georgia, serif; }
+.font-heading  { font-family: 'Bebas Neue', Impact, sans-serif; }
+.font-body     { font-family: 'Montserrat', Arial, sans-serif; }
+
+/* ─── Scroll reveal base ─── */
+.rv {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.8s ease, transform 0.8s var(--ease);
+}
+.rv.from-left  { transform: translateX(-36px); }
+.rv.from-right { transform: translateX(36px); }
+.rv.visible    { opacity: 1 !important; transform: none !important; }
+
+/* ─── Tag / eyebrow ─── */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 0.52rem;
+  font-weight: 600;
+  letter-spacing: 0.58em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.tag::before {
+  content: '';
+  width: 20px;
+  height: 1px;
+  background: var(--gold);
+  flex-shrink: 0;
+}
+
+/* ─── Title clip (for slide-up effect) ─── */
+.title-clip { overflow: hidden; }
+
+/* ─── Gold divider line ─── */
+.gold-line {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold), var(--gold-hi), var(--gold), transparent);
+  opacity: 0.18;
+}
+
+/* ─── Parallax image wrapper ─── */
+.plx-wrap {
+  position: absolute;
+  inset: -22%;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+.plx-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ─── Section padding ─── */
+.section-pad { padding: 9rem 0; }
+@media (max-width: 768px) { .section-pad { padding: 5.5rem 0; } }
+
+/* ─── Page transition ─── */
+.page-enter  { opacity: 0; transform: translateY(20px); }
+.page-exit   { opacity: 0; }
+
+/* ─── Lenis smooth scroll ─── */
+html.lenis { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   OPTION C — ACCESSIBILITY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+/* ─── Skip link (Tailwind sr-only/focus:not-sr-only doesn't cover all cases) ─── */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border-width: 0;
+}
+.sr-only:focus,
+.sr-only:focus-within {
+  position: fixed;
+  width: auto; height: auto;
+  padding: 0; margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* ─── Global focus-visible ring ───
+   Only shows on keyboard navigation (not mouse clicks).
+   Every interactive element gets a gold ring — overrides outline:none. */
+:focus { outline: none; }
+
+:focus-visible {
+  outline: 2px solid var(--gold) !important;
+  outline-offset: 3px !important;
+}
+
+/* Slightly tighter ring on small buttons */
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--gold) !important;
+  outline-offset: 2px !important;
+}
+
+/* ─── Reduced motion ───
+   Respects the OS "Reduce Motion" accessibility setting.
+   Disables ALL transitions, animations, and parallax. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration:        0.01ms !important;
+    animation-iteration-count: 1      !important;
+    transition-duration:       0.01ms !important;
+    scroll-behavior:           auto   !important;
+  }
+
+  /* Lenis smooth scroll won't be active — make html scroll normally */
+  html { scroll-behavior: auto !important; }
+
+  /* Freeze parallax wrappers */
+  .plx-wrap,
+  [style*="will-change: transform"] {
+    transform: none !important;
+    will-change: auto !important;
+  }
+
+  /* Keep content visible — don't hide reveal items */
+  .rv {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ─── High contrast mode support ─── */
+@media (forced-colors: active) {
+  :focus-visible { outline: 3px solid ButtonText !important; }
+  .tag::before   { background: ButtonText; }
+}
+
+/* ─── Keyboard-only hover states ───
+   Ensures buttons/links visually respond when focused via keyboard */
+a:focus-visible,
+button:focus-visible {
+  position: relative;
+  z-index: 1; /* ensure ring isn't clipped by overflow:hidden parents */
+}
+
+/* ─── Form field accessible states ─── */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 1px solid var(--gold) !important;
+  outline-offset: 0 !important;
+}
+
+/* ─── Colour contrast helpers ───
+   Slightly boost text opacity on sections where dim text is used. */
+@media (prefers-contrast: more) {
+  body { --dim: rgba(240,233,220,0.78); }
+  .rv  { opacity: 1 !important; }
+}
+
+/* ─── Print styles ─── */
+@media print {
+  /* Hide nav, cursor, loader, noise, scroll progress */
+  #nav, #ldr, #cd, #cr, #grain,
+  .marquee-bar, footer nav,
+  [aria-hidden="true"] { display: none !important; }
+
+  body {
+    background: white !important;
+    color: black !important;
+    cursor: auto !important;
+  }
+
+  a { color: black !important; text-decoration: underline; }
+
+  section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Show full URLs on print */
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.75em;
+    color: #666;
+  }
+}
