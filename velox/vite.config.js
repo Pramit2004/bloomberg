@@ -21,7 +21,9 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true,          // expose on 0.0.0.0 for Codespace port forwarding
-    allowedHosts: 'bloomberg.onrender.com', // allow any host — required for Render, Codespace, Railway etc.
+    allowedHosts: [
+      "bloomberg.onrender.com"
+    ],
     hmr: {
       overlay: true,
     },
